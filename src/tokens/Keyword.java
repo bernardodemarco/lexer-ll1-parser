@@ -1,12 +1,18 @@
 package tokens;
 
 public enum Keyword implements Token {
-    INT("int"),
     IF("if"),
     ELSE("else"),
+    WHILE("while"),
+    FOR("for"),
+    PUBLIC("public"),
+    PROTECTED("protected"),
+    PRIVATE("private"),
     DEF("def"),
-    PRINT("print"),
-    RETURN("return");
+    RETURN("return"),
+    TRUE("true"),
+    FALSE("false"),
+    PRINT("print");
 
     private final String lexeme;
 

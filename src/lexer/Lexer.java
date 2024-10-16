@@ -4,30 +4,29 @@ import reader.Reader;
 import tokens.*;
 import tokens.Number;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 // TODO:
-// - Review Character.isDigit() isLetter() and isAlphabetic() differences
 // - Review behaviour with keywords
-// - Add multiple lines
 // - Handle when non-recognized characters are inserted
-// - Refactor code (Classes Diagram + logic)
 // - Take a look at maximal crunch
 // -> review which tokens need to be inserted at the tabçe
 
 public class Lexer {
     private final Map<String, Token> reservedWords = new HashMap<>();
-    private Reader reader;
+    private final Reader reader;
 
     public Lexer() {
         reader = new Reader();
         reserveKeywords();
     }
 
-    public void scan()  {
+    public void scan(String filePath) throws IOException {
+        reader.loadSourceFile(filePath);
         while (reader.hasContentToConsume()) {
             char character = reader.getCurrentChar();
 
@@ -58,8 +57,7 @@ public class Lexer {
             return tokenizeIdentifier(character);
         }
 
-        System.out.println("did not identify the char");
-        return null;
+        throw new UnrecognizedCharacterException(character);
     }
 
     private Token tokenizeIdentifier(char character) {

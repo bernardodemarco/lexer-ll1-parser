@@ -1,0 +1,12 @@
+def isEqualToTen return num = 10
+def isDifferentThanTen return num <> 10
+def isLessThanTen return num < 10
+def isLessThanOrEqualToTen return num <= 10
+def isGreaterThanTen return num > 10
+def isGreaterThanOrEqualToTen return num < 10
+private value
+if value > 20 100 else 50
+protected i
+for i print i
+public endOfFile
+while endOfFile = false print

@@ -1,14 +1,28 @@
 package reader;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 public class Reader {
-    private List<String> content = List.of(
-            "= 100<> 2356>g> 2004=f25<?<=! 10 bernardo be2004 bmg def int if else return inteiro returned",
-            "(10 bernardo be2004 bmg def <while"
-    );
+    private List<String> content;
     private int line = 0;
     private int column = 0;
+
+    public Map<String, Integer> getLocation() {
+        return Map.of(
+                "line", line,
+                "column", column
+        );
+    }
+
+    public void loadSourceFile(String filePath) throws IOException {
+        content = Files.readAllLines(Paths.get(filePath));
+        line = 0;
+        column = 0;
+    }
 
     public boolean hasContentToConsume() {
         boolean currentLineIsPreviousToLastLine = line < content.size() - 1;
@@ -19,6 +33,10 @@ public class Reader {
 
     public boolean isEndOfLine() {
         return column == content.get(line).length() - 1;
+    }
+
+    public boolean isLineEmpty() {
+        return content.get(line).isEmpty();
     }
 
     public char getCurrentChar() {
