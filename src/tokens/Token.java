@@ -12,6 +12,6 @@ public interface Token {
     String getLexeme();
 
     default String getStringRepresentation() {
-        return String.format("%s[\"%s\"]", getType(), getLexeme());
+        return String.format("%s['%s']", getType(), getLexeme());
     }
 }

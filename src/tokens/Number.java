@@ -19,10 +19,6 @@ public class Number implements Token {
         return lexeme;
     }
 
-    public int getValue() {
-        return value;
-    }
-
     @Override
     public String toString() {
         return getStringRepresentation();

@@ -1,23 +1,15 @@
 package lexer;
 
+import exceptions.UnrecognizedCharacterException;
 import reader.Reader;
 import tokens.*;
 import tokens.Number;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-// TODO:
-// - Review behaviour with keywords
-// - Handle when non-recognized characters are inserted
-// - Take a look at maximal crunch
-// -> review which tokens need to be inserted at the tabçe
+import java.util.*;
 
 public class Lexer {
-    private final Map<String, Token> reservedWords = new HashMap<>();
+    private final Map<String, Token> symbolsTable = new HashMap<>();
     private final Reader reader;
 
     public Lexer() {
@@ -25,8 +17,10 @@ public class Lexer {
         reserveKeywords();
     }
 
-    public void scan(String filePath) throws IOException {
+    public Map.Entry<List<Token>, Map<String, Token>> scan(String filePath) throws IOException {
         reader.loadSourceFile(filePath);
+        List<Token> tokens = new ArrayList<>();
+
         while (reader.hasContentToConsume()) {
             char character = reader.getCurrentChar();
 
@@ -35,13 +29,11 @@ public class Lexer {
                 continue;
             }
 
-            Token token = tokenize(character);
-            if (token != null) {
-                System.out.println(token);
-            }
-
+            tokens.add(tokenize(character));
             reader.goToNextChar();
         }
+
+        return new AbstractMap.SimpleImmutableEntry<>(tokens, symbolsTable);
     }
 
     private Token tokenize(char character) {
@@ -57,7 +49,7 @@ public class Lexer {
             return tokenizeIdentifier(character);
         }
 
-        throw new UnrecognizedCharacterException(character);
+        throw new UnrecognizedCharacterException(character, reader.getHumanReadablePosition());
     }
 
     private Token tokenizeIdentifier(char character) {
@@ -65,12 +57,9 @@ public class Lexer {
         while (true) {
             identifierBuilder.append(character);
 
-            // need to check for end of column (last char in column)
             if (reader.isEndOfLine()) {
                 break;
             }
-
-            //remember to check for linebreaks first
 
             reader.goToNextChar();
             character = reader.getCurrentChar();
@@ -81,8 +70,8 @@ public class Lexer {
         }
 
         String identifierLexeme = identifierBuilder.toString();
-        if (reservedWords.containsKey(identifierLexeme)) {
-            return reservedWords.get(identifierLexeme);
+        if (symbolsTable.containsKey(identifierLexeme)) {
+            return symbolsTable.get(identifierLexeme);
         }
 
         Token token = new Identifier(identifierLexeme);
@@ -90,36 +79,23 @@ public class Lexer {
         return token;
     }
 
-    // 100  1000 1
     private Token tokenizeNumber(char character) {
         int value = 0;
-        boolean isDigitAndIsEndOfFile = false;
+        boolean isEndOfLine = false;
         do {
             int digit = Character.getNumericValue(character);
             value = value * 10 + digit;
 
-            // esse aqui
-            // is end of column actually
             if (reader.isEndOfLine()) {
-                isDigitAndIsEndOfFile = true;
+                isEndOfLine = true;
                 break;
             }
 
             reader.goToNextChar();
             character = reader.getCurrentChar();
-//            if (!reader.isEndOfContent()) {
-//                reader.goToNextChar();
-//                character = reader.getCurrentChar();
-//            } else {
-//                // se ta na ultima coluna, vaza
-//                isDigitAndIsEndOfFile = true;
-//                break;
-//            }
-
         } while (isDigit(character));
-        // reaches out here either because is endoffile (do not need
-        // to come back) or because is not a digit, then needs to comeback
-        if (!isDigitAndIsEndOfFile) {
+
+        if (!isEndOfLine) {
             reader.goToPreviousChar();
         }
 
@@ -154,17 +130,18 @@ public class Lexer {
 
         int state = transitionTable.get(0).get(character);
         while (!acceptStates.containsKey(state)) {
-            // end of line actually
             if (reader.isEndOfLine()) {
                 character = '*';
-            } else {
-                reader.goToNextChar();
-                character = reader.getCurrentChar();
+                state = transitionTable.get(state).get(character);
+                break;
+            }
 
-                if (!isRelOpCharacter(character)) {
-                    character = '*';
-                    reader.goToPreviousChar();
-                }
+            reader.goToNextChar();
+            character = reader.getCurrentChar();
+
+            if (!isRelOpCharacter(character)) {
+                character = '*';
+                reader.goToPreviousChar();
             }
 
             state = transitionTable.get(state).get(character);
@@ -174,7 +151,7 @@ public class Lexer {
     }
 
     private void reserve(Token token) {
-        reservedWords.put(token.getLexeme(), token);
+        symbolsTable.put(token.getLexeme(), token);
     }
 
     private void reserveKeywords() {

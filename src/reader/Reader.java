@@ -11,10 +11,10 @@ public class Reader {
     private int line = 0;
     private int column = 0;
 
-    public Map<String, Integer> getLocation() {
+    public Map<String, Integer> getHumanReadablePosition() {
         return Map.of(
-                "line", line,
-                "column", column
+                "line", line + 1,
+                "column", column + 1
         );
     }
 

@@ -1,7 +1,9 @@
 import lexer.Lexer;
+import tokens.Token;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -25,7 +27,7 @@ public class Main {
                 continue;
             }
 
-            lexer.scan(files.get(option - 1));
+            printOutput(lexer.scan(files.get(option - 1)));
             promptOptions();
             option = scanner.nextInt();
         }
@@ -45,5 +47,17 @@ public class Main {
         System.out.println("(1) - /src/lsi/file-without-lexical-errors.lsi (file without lexical errors)");
         System.out.println("(2) - /src/lsi/file-with-lexical-errors.lsi (file with lexical errors)");
         System.out.println("(0) - Enter 0 to exit");
+    }
+
+    private static void printOutput(Map.Entry<List<Token>, Map<String, Token>> output) {
+        List<Token> tokens = output.getKey();
+        Map<String, Token> symbolsTable = output.getValue();
+
+        System.out.println("----------TOKENS-----------");
+        System.out.println(tokens);
+        System.out.println();
+        System.out.println("-------SYMBOLS TABLE-------");
+        System.out.println(symbolsTable);
+        System.out.println();
     }
 }

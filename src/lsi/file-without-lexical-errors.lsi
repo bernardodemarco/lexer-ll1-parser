@@ -10,8 +10,9 @@ if value > 20 100 else 50<4
 
 protected i
 
-
 for i print i
 
 public endOfFile
 while endOfFile = false print
+
+def testMaximalMunch return printer
