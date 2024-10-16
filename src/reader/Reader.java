@@ -32,14 +32,14 @@ public class Reader {
     }
 
     public boolean isEndOfLine() {
-        return column == content.get(line).length() - 1;
-    }
-
-    public boolean isLineEmpty() {
-        return content.get(line).isEmpty();
+        return column >= content.get(line).length() - 1;
     }
 
     public char getCurrentChar() {
+        if (content.get(line).isEmpty()) {
+            return '\n';
+        }
+
         return content.get(line).charAt(column);
     }
 

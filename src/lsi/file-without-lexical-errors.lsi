@@ -4,9 +4,14 @@ def isLessThanTen return num < 10
 def isLessThanOrEqualToTen return num <= 10
 def isGreaterThanTen return num > 10
 def isGreaterThanOrEqualToTen return num < 10
+
 private value
-if value > 20 100 else 50
+if value > 20 100 else 50<4
+
 protected i
+
+
 for i print i
+
 public endOfFile
 while endOfFile = false print
