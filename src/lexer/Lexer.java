@@ -16,6 +16,7 @@ import java.util.Map;
 // - Handle when non-recognized characters are inserted
 // - Refactor code (Classes Diagram + logic)
 // - Take a look at maximal crunch
+// -> review which tokens need to be inserted at the tabçe
 
 public class Lexer {
     private final Map<String, Token> reservedWords = new HashMap<>();
@@ -44,14 +45,6 @@ public class Lexer {
         }
     }
 
-    private void reserve(Token token) {
-        reservedWords.put(token.getLexeme(), token);
-    }
-
-    private void reserveKeywords() {
-        Arrays.stream(Keyword.values()).forEach(this::reserve);
-    }
-
     private Token tokenize(char character) {
         if (isRelOpCharacter(character)) {
             return tokenizeRelOp(character);
@@ -74,9 +67,12 @@ public class Lexer {
         while (true) {
             identifierBuilder.append(character);
 
-            if (reader.isEndOfContent()) {
+            // need to check for end of column (last char in column)
+            if (reader.isEndOfLine()) {
                 break;
             }
+
+            //remember to check for linebreaks first
 
             reader.goToNextChar();
             character = reader.getCurrentChar();
@@ -86,12 +82,13 @@ public class Lexer {
             }
         }
 
-        if (reservedWords.containsKey(identifierBuilder.toString())) {
-            return reservedWords.get(identifierBuilder.toString());
+        String identifierLexeme = identifierBuilder.toString();
+        if (reservedWords.containsKey(identifierLexeme)) {
+            return reservedWords.get(identifierLexeme);
         }
 
-        Token token = new Identifier(identifierBuilder.toString());
-        reservedWords.put(identifierBuilder.toString(), token);
+        Token token = new Identifier(identifierLexeme);
+        reserve(token);
         return token;
     }
 
@@ -105,7 +102,7 @@ public class Lexer {
 
             // esse aqui
             // is end of column actually
-            if (reader.isEndOfContent()) {
+            if (reader.isEndOfLine()) {
                 isDigitAndIsEndOfFile = true;
                 break;
             }
@@ -159,7 +156,8 @@ public class Lexer {
 
         int state = transitionTable.get(0).get(character);
         while (!acceptStates.containsKey(state)) {
-            if (reader.isEndOfContent()) {
+            // end of line actually
+            if (reader.isEndOfLine()) {
                 character = '*';
             } else {
                 reader.goToNextChar();
@@ -175,6 +173,14 @@ public class Lexer {
         }
 
         return acceptStates.get(state);
+    }
+
+    private void reserve(Token token) {
+        reservedWords.put(token.getLexeme(), token);
+    }
+
+    private void reserveKeywords() {
+        Arrays.stream(Keyword.values()).forEach(this::reserve);
     }
 
     private boolean isWhitespace(char character) {
