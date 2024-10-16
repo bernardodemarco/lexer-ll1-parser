@@ -8,18 +8,24 @@ public enum Keyword implements Token {
     PRINT("print"),
     RETURN("return");
 
-    private final String lexema;
+    private final String lexeme;
 
-    Keyword(String lexema) {
-        this.lexema = lexema;
+    Keyword(String lexeme) {
+        this.lexeme = lexeme;
     }
 
-    public String getLexema() {
-        return lexema;
+    @Override
+    public String getLexeme() {
+        return lexeme;
     }
 
     @Override
     public Type getType() {
         return Type.KEYWORD;
+    }
+
+    @Override
+    public String toString() {
+        return getStringRepresentation();
     }
 }

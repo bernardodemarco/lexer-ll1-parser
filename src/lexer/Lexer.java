@@ -1,8 +1,11 @@
 package lexer;
 
 import tokens.*;
+import tokens.Number;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 // TODO:
@@ -11,58 +14,61 @@ import java.util.Map;
 // - Add multiple lines
 // - Handle when non-recognized characters are inserted
 // - Refactor code (Classes Diagram + logic)
+// - Take a look at maximal crunch
 
 public class Lexer {
     private final Map<String, Token> reservedWords = new HashMap<>();
     private String content = "= 100<> 2356>g> 2004=f25<?<=! 10 bernardo be2004 bmg";
-//    private String content = "for each <= >= = while ( )";
     private int column = 0;
-
-    // refactor this
-    private void reserve(Token token) {
-        if (token instanceof Word word) {
-            reservedWords.put(word.getLexema(), word);
-        } else if (token instanceof Keyword keyword) {
-            reservedWords.put(keyword.getLexema(), keyword);
-        }
-    }
-
-    private void reserveKeywords() {
-        for (Keyword keyword : Keyword.values()) {
-            reserve(keyword);
-        }
-    }
 
     public Lexer() {
         reserveKeywords();
     }
 
-    public void run()  {
+    public void scan()  {
         while (column < content.length()) {
             char character = content.charAt(column);
 
-            if (Character.isWhitespace(character)) {
+            if (isWhitespace(character)) {
                 column++;
                 continue;
             }
 
-            if (character == '<' || character == '>' || character == '=') {
-                Token relopToken = handleRelop(character);
-                System.out.println(relopToken);
-            } else if (Character.isDigit(character)) {
-                Token digitToken = handleDigit(character);
-                System.out.println(digitToken);
-            } else if (Character.isLetter(character)) {
-                Token wordToken = handleIdentifier(character);
-                System.out.println(wordToken);
-            } else {
-                System.out.println("did not identify the char");
+            Token token = tokenize(character);
+            if (token != null) {
+                System.out.println(token);
             }
+
             column++;
         }
     }
 
-    public Token handleIdentifier(char character) {
+    private void reserve(Token token) {
+        reservedWords.put(token.getLexeme(), token);
+    }
+
+    private void reserveKeywords() {
+        Arrays.stream(Keyword.values()).forEach(this::reserve);
+    }
+
+    private Token tokenize(char character) {
+        if (isRelOpCharacter(character)) {
+            return tokenizeRelOp(character);
+        }
+
+        if (isDigit(character)) {
+            return tokenizeNumber(character);
+        }
+
+        if (isIdentifierStart(character)) {
+            return tokenizeIdentifier(character);
+        }
+
+        System.out.println("did not identify the char");
+        return null;
+    }
+
+    private Token tokenizeIdentifier(char character) {
         StringBuilder identifierBuilder = new StringBuilder();
         while (true) {
             identifierBuilder.append(character);
@@ -73,7 +79,7 @@ public class Lexer {
 
             column++;
             character = content.charAt(column);
-            if (!Character.isLetterOrDigit(character)) {
+            if (!isIdentifierPart(character)) {
                 column--;
                 break;
             }
@@ -83,13 +89,13 @@ public class Lexer {
             return reservedWords.get(identifierBuilder.toString());
         }
 
-        Token token = new Word(identifierBuilder.toString());
+        Token token = new Identifier(identifierBuilder.toString());
         reservedWords.put(identifierBuilder.toString(), token);
         return token;
     }
 
     // 100  1000 1
-    public Token handleDigit(char character) {
+    private Token tokenizeNumber(char character) {
         int value = 0;
         boolean isDigitAndIsEndOfFile = false;
         do {
@@ -105,24 +111,24 @@ public class Lexer {
                 break;
             }
 
-        } while (Character.isDigit(character));
+        } while (isDigit(character));
         // reaches out here either because is endoffile (do not need
         // to come back) or because is not a digit, then needs to comeback
         if (!isDigitAndIsEndOfFile) {
             column--;
         }
 
-        return new IntegerNumber(value);
+        return new Number(String.valueOf(value), value);
     }
 
-    public Token handleRelop(char character) {
-        Map<Integer, RelationalOperator> acceptStates = Map.of(
-                2, new RelationalOperator(RelationalOperator.Operator.LE),
-                3, new RelationalOperator(RelationalOperator.Operator.NE),
-                4, new RelationalOperator(RelationalOperator.Operator.LT),
-                5, new RelationalOperator(RelationalOperator.Operator.EQ),
-                7, new RelationalOperator(RelationalOperator.Operator.GE),
-                8, new RelationalOperator(RelationalOperator.Operator.GT)
+    private Token tokenizeRelOp(char character) {
+        Map<Integer, RelOp> acceptStates = Map.of(
+                2, RelOp.LE,
+                3, RelOp.NE,
+                4, RelOp.LT,
+                5, RelOp.EQ,
+                7, RelOp.GE,
+                8, RelOp.GT
         );
 
         Map<Integer, Map<Character, Integer>> transitionTable = new HashMap<>();
@@ -149,7 +155,7 @@ public class Lexer {
                 column++;
                 character = content.charAt(column);
 
-                if (character != '=' && character != '<' && character != '>') {
+                if (!isRelOpCharacter(character)) {
                     character = '*';
                     column--;
                 }
@@ -159,5 +165,26 @@ public class Lexer {
         }
 
         return acceptStates.get(state);
+    }
+
+    private boolean isWhitespace(char character) {
+        return Character.isWhitespace(character);
+    }
+
+    private boolean isRelOpCharacter(char character) {
+        List<Character> relOpCharacters = List.of('<', '>', '=');
+        return relOpCharacters.contains(character);
+    }
+
+    private boolean isIdentifierStart(char character) {
+        return Character.isJavaIdentifierStart(character);
+    }
+
+    private boolean isIdentifierPart(char character) {
+        return Character.isJavaIdentifierPart(character);
+    }
+
+    private boolean isDigit(char character) {
+        return Character.isDigit(character);
     }
 }
