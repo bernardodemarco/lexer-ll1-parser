@@ -1,5 +1,6 @@
 package lexer;
 
+import reader.Reader;
 import tokens.*;
 import tokens.Number;
 
@@ -18,19 +19,19 @@ import java.util.Map;
 
 public class Lexer {
     private final Map<String, Token> reservedWords = new HashMap<>();
-    private String content = "= 100<> 2356>g> 2004=f25<?<=! 10 bernardo be2004 bmg";
-    private int column = 0;
+    private Reader reader;
 
     public Lexer() {
+        reader = new Reader();
         reserveKeywords();
     }
 
     public void scan()  {
-        while (column < content.length()) {
-            char character = content.charAt(column);
+        while (reader.hasContentToConsume()) {
+            char character = reader.getCurrentChar();
 
             if (isWhitespace(character)) {
-                column++;
+                reader.goToNextChar();
                 continue;
             }
 
@@ -39,7 +40,7 @@ public class Lexer {
                 System.out.println(token);
             }
 
-            column++;
+            reader.goToNextChar();
         }
     }
 
@@ -73,14 +74,14 @@ public class Lexer {
         while (true) {
             identifierBuilder.append(character);
 
-            if (column == content.length() - 1) {
+            if (reader.isEndOfContent()) {
                 break;
             }
 
-            column++;
-            character = content.charAt(column);
+            reader.goToNextChar();
+            character = reader.getCurrentChar();
             if (!isIdentifierPart(character)) {
-                column--;
+                reader.goToPreviousChar();
                 break;
             }
         }
@@ -102,20 +103,29 @@ public class Lexer {
             int digit = Character.getNumericValue(character);
             value = value * 10 + digit;
 
-            if (column < content.length() - 1) {
-                column++;
-                character = content.charAt(column);
-            } else {
-                // se ta na ultima coluna, vaza
+            // esse aqui
+            // is end of column actually
+            if (reader.isEndOfContent()) {
                 isDigitAndIsEndOfFile = true;
                 break;
             }
+
+            reader.goToNextChar();
+            character = reader.getCurrentChar();
+//            if (!reader.isEndOfContent()) {
+//                reader.goToNextChar();
+//                character = reader.getCurrentChar();
+//            } else {
+//                // se ta na ultima coluna, vaza
+//                isDigitAndIsEndOfFile = true;
+//                break;
+//            }
 
         } while (isDigit(character));
         // reaches out here either because is endoffile (do not need
         // to come back) or because is not a digit, then needs to comeback
         if (!isDigitAndIsEndOfFile) {
-            column--;
+            reader.goToPreviousChar();
         }
 
         return new Number(String.valueOf(value), value);
@@ -149,15 +159,15 @@ public class Lexer {
 
         int state = transitionTable.get(0).get(character);
         while (!acceptStates.containsKey(state)) {
-            if (column == content.length() - 1) {
+            if (reader.isEndOfContent()) {
                 character = '*';
             } else {
-                column++;
-                character = content.charAt(column);
+                reader.goToNextChar();
+                character = reader.getCurrentChar();
 
                 if (!isRelOpCharacter(character)) {
                     character = '*';
-                    column--;
+                    reader.goToPreviousChar();
                 }
             }
 
