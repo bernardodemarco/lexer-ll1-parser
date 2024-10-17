@@ -1,3 +1,6 @@
+/*
+    Bernardo De Marco Gonçalves - 22102557
+*/
 import lexer.Lexer;
 import tokens.Token;
 

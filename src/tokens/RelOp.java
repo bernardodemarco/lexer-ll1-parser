@@ -1,3 +1,6 @@
+/*
+    Bernardo De Marco Gonçalves - 22102557
+*/
 package tokens;
 
 public enum RelOp implements Token {
