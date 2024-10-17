@@ -21,3 +21,5 @@ chmod +x ./run.sh
 # Executar o _script_
 ./run.sh
 ```
+
+Os arquivos de código-fonte a serem analisados pelo Lexer encontram-se no _folder_ `/src/lsi`. Ao executar o Lexer, é solicitado ao usuário qual arquivo ele deseja que o Lexer analise. Dois arquivos estão disponíveis, um com erros léxicos e outro sem.
