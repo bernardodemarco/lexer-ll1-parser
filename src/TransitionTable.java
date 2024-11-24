@@ -38,7 +38,7 @@ public class TransitionTable {
         ));
 
         table.put("PARLIST'", Map.of(
-                ")", "PARLIST -> ε",
+                ")", "PARLIST' -> ε",
                 ",", "PARLIST' -> , PARLIST"
         ));
 
@@ -101,7 +101,7 @@ public class TransitionTable {
         ));
 
         table.put("IFSTMT", Map.of(
-                "if", "if ( EXPR ) STMT IFSTMT'"
+                "if", "IFSTMT -> if ( EXPR ) STMT IFSTMT'"
         ));
 
         table.put("IFSTMT'", Map.of(
