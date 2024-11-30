@@ -1,18 +1,20 @@
-def isEqualToTen return num = 10
-def isDifferentThanTen return num <> 10
-def isLessThanTen return num < 10
-def isLessThanOrEqualToTen return num <= 10
-def isGreaterThanTen return num > 10
-def isGreaterThanOrEqualToTen return num < 10
+def fibonacci(int position) {
+    if (position = 0) {
+        return 0;
+    }
 
-private value
-if value > 20 100 else 50<4
+    if (position = 1) {
+        return 1;
+    }
 
-protected i
+    return fibonacci(position - 1) + fibonacci(position - 2);
+}
 
-for i print i
+def main(int argc) {
+    int position, result;
 
-public endOfFile
-while endOfFile = false print
+    position = 5;
+    result = fibonacci(position);
 
-def testMaximalMunch return printer
+    print result;
+}
