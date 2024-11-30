@@ -8,7 +8,8 @@ public interface Token {
         NUMBER,
         RELATIONAL_OPERATOR,
         IDENTIFIER,
-        KEYWORD
+        KEYWORD,
+        SYMBOL
     }
 
     Type getType();
