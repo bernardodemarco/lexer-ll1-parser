@@ -8,7 +8,7 @@ public class Symbol implements Token {
         PLUS, MINUS, MULTIPLY,
         DIVIDE, ASSIGN, LPAREN,
         RPAREN, LBRACE, RBRACE,
-        COMMA, SEMICOLON
+        COMMA, SEMICOLON, END_OF_INPUT
     }
 
     public Symbol(String lexeme, SymbolType symbolType) {
