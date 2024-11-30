@@ -1,20 +1,25 @@
 /*
     Bernardo De Marco Gonçalves - 22102557
 */
-package tokens;
+package lexer.tokens;
 
-public class Number implements Token {
+public enum RelOp implements Token {
+    LT("<"),
+    LE("<="),
+    GT(">"),
+    GE(">="),
+    EQ("="),
+    NE("<>");
+
     private final String lexeme;
-    private final int value;
 
-    public Number(String lexeme, int value) {
+    RelOp(String lexeme) {
         this.lexeme = lexeme;
-        this.value = value;
     }
 
     @Override
     public Type getType() {
-        return Type.NUMBER;
+        return Type.RELATIONAL_OPERATOR;
     }
 
     @Override

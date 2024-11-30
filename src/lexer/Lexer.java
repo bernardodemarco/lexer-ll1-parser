@@ -1,12 +1,15 @@
-/*
+package lexer;/*
     Bernardo De Marco Gonçalves - 22102557
 */
-package lexer;
 
-import exceptions.UnrecognizedCharacterException;
+import lexer.exceptions.UnrecognizedCharacterException;
+import lexer.tokens.Identifier;
+import lexer.tokens.Keyword;
+import lexer.tokens.RelOp;
+import lexer.tokens.Symbol;
+import lexer.tokens.Token;
 import reader.Reader;
-import tokens.*;
-import tokens.Number;
+import lexer.tokens.Number;
 
 import java.io.IOException;
 import java.util.*;
@@ -72,8 +75,20 @@ public class Lexer {
             case '}' -> new Symbol("}", Symbol.SymbolType.RBRACE);
             case ',' -> new Symbol(",", Symbol.SymbolType.COMMA);
             case ';' -> new Symbol(";", Symbol.SymbolType.SEMICOLON);
+            case ':' -> tokenizeAssignSymbol();
             default -> null;
         };
+    }
+
+    private Token tokenizeAssignSymbol() {
+        reader.goToNextChar();
+        char character = reader.getCurrentChar();
+        if (character == '=') {
+            return new Symbol(":=", Symbol.SymbolType.ASSIGN);
+        }
+
+        reader.goToPreviousChar();
+        return null;
     }
 
     private Token tokenizeIdentifier(char character) {

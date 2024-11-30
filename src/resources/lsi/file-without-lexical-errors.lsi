@@ -13,8 +13,8 @@ def fibonacci(int position) {
 def main(int argc) {
     int position, result;
 
-    position = 5;
-    result = fibonacci(position);
+    position := 5;
+    result := fibonacci(position);
 
     print result;
 }

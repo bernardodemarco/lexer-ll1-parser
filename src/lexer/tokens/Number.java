@@ -1,18 +1,20 @@
 /*
     Bernardo De Marco Gonçalves - 22102557
 */
-package tokens;
+package lexer.tokens;
 
-public class Identifier implements Token {
+public class Number implements Token {
     private final String lexeme;
+    private final int value;
 
-    public Identifier(String lexeme) {
+    public Number(String lexeme, int value) {
         this.lexeme = lexeme;
+        this.value = value;
     }
 
     @Override
     public Type getType() {
-        return Type.IDENTIFIER;
+        return Type.NUMBER;
     }
 
     @Override

@@ -1,7 +1,7 @@
 /*
     Bernardo De Marco Gonçalves - 22102557
 */
-package exceptions;
+package lexer.exceptions;
 
 import java.util.Map;
 

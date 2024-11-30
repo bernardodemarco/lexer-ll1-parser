@@ -1,7 +1,7 @@
 /*
     Bernardo De Marco Gonçalves - 22102557
 */
-package tokens;
+package lexer.tokens;
 
 public interface Token {
     enum Type {

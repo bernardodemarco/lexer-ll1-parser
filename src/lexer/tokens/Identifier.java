@@ -1,25 +1,18 @@
 /*
     Bernardo De Marco Gonçalves - 22102557
 */
-package tokens;
+package lexer.tokens;
 
-public enum RelOp implements Token {
-    LT("<"),
-    LE("<="),
-    GT(">"),
-    GE(">="),
-    EQ("="),
-    NE("<>");
-
+public class Identifier implements Token {
     private final String lexeme;
 
-    RelOp(String lexeme) {
+    public Identifier(String lexeme) {
         this.lexeme = lexeme;
     }
 
     @Override
     public Type getType() {
-        return Type.RELATIONAL_OPERATOR;
+        return Type.IDENTIFIER;
     }
 
     @Override

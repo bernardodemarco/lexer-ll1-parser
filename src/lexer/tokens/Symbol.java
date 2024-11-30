@@ -1,4 +1,4 @@
-package tokens;
+package lexer.tokens;
 
 public class Symbol implements Token {
     private String lexeme;
