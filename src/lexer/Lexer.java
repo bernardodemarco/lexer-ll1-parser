@@ -40,6 +40,11 @@ public class Lexer {
     }
 
     private Token tokenize(char character) {
+        Token symbol = tokenizeSymbol(character);
+        if (symbol != null) {
+            return symbol;
+        }
+
         if (isRelOpCharacter(character)) {
             return tokenizeRelOp(character);
         }
@@ -53,6 +58,22 @@ public class Lexer {
         }
 
         throw new UnrecognizedCharacterException(character, reader.getHumanReadablePosition());
+    }
+
+    private Token tokenizeSymbol(char character) {
+        return switch (character) {
+            case '+' -> new Symbol("+", Symbol.SymbolType.PLUS);
+            case '-' -> new Symbol("-", Symbol.SymbolType.MINUS);
+            case '*' -> new Symbol("*", Symbol.SymbolType.MULTIPLY);
+            case '/' -> new Symbol("/", Symbol.SymbolType.DIVIDE);
+            case '(' -> new Symbol("(", Symbol.SymbolType.LPAREN);
+            case ')' -> new Symbol(")", Symbol.SymbolType.RPAREN);
+            case '{' -> new Symbol("{", Symbol.SymbolType.LBRACE);
+            case '}' -> new Symbol("}", Symbol.SymbolType.RBRACE);
+            case ',' -> new Symbol(",", Symbol.SymbolType.COMMA);
+            case ';' -> new Symbol(";", Symbol.SymbolType.SEMICOLON);
+            default -> null;
+        };
     }
 
     private Token tokenizeIdentifier(char character) {
