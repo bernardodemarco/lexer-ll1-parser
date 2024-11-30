@@ -1,28 +1,45 @@
 package lexer.tokens;
 
-public class Symbol implements Token {
-    private String lexeme;
-    private SymbolType symbolType;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-    public enum SymbolType {
-        PLUS, MINUS, MULTIPLY,
-        DIVIDE, ASSIGN, LPAREN,
-        RPAREN, LBRACE, RBRACE,
-        COMMA, SEMICOLON, END_OF_INPUT
+public enum Symbol implements Token {
+    PLUS("+"),
+    MINUS("-"),
+    MULTIPLY("*"),
+    DIVIDE("/"),
+    ASSIGN(":="),
+    LPAREN("("),
+    RPAREN(")"),
+    LBRACE("{"),
+    RBRACE("}"),
+    COMMA(","),
+    SEMICOLON(";"),
+    END_OF_INPUT("$");
+
+    private static final Map<String, Symbol> MAP;
+
+    static {
+        MAP = new HashMap<>();
+        Arrays.stream(Symbol.values()).forEach((symbol) -> {
+            MAP.put(symbol.getLexeme(), symbol);
+        });
     }
 
-    public Symbol(String lexeme, SymbolType symbolType) {
+    private final String lexeme;
+
+    Symbol(String lexeme) {
         this.lexeme = lexeme;
-        this.symbolType = symbolType;
+    }
+
+    public static Symbol get(String lexeme) {
+        return MAP.getOrDefault(lexeme, null);
     }
 
     @Override
     public Type getType() {
         return Token.Type.SYMBOL;
-    }
-
-    public SymbolType getSymbolType() {
-        return symbolType;
     }
 
     @Override

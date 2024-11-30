@@ -64,27 +64,18 @@ public class Lexer {
     }
 
     private Token tokenizeSymbol(char character) {
-        return switch (character) {
-            case '+' -> new Symbol("+", Symbol.SymbolType.PLUS);
-            case '-' -> new Symbol("-", Symbol.SymbolType.MINUS);
-            case '*' -> new Symbol("*", Symbol.SymbolType.MULTIPLY);
-            case '/' -> new Symbol("/", Symbol.SymbolType.DIVIDE);
-            case '(' -> new Symbol("(", Symbol.SymbolType.LPAREN);
-            case ')' -> new Symbol(")", Symbol.SymbolType.RPAREN);
-            case '{' -> new Symbol("{", Symbol.SymbolType.LBRACE);
-            case '}' -> new Symbol("}", Symbol.SymbolType.RBRACE);
-            case ',' -> new Symbol(",", Symbol.SymbolType.COMMA);
-            case ';' -> new Symbol(";", Symbol.SymbolType.SEMICOLON);
-            case ':' -> tokenizeAssignSymbol();
-            default -> null;
-        };
+        if (character == Symbol.ASSIGN.getLexeme().charAt(0)) {
+            return tokenizeAssignSymbol();
+        }
+
+        return Symbol.get(String.valueOf(character));
     }
 
     private Token tokenizeAssignSymbol() {
         reader.goToNextChar();
         char character = reader.getCurrentChar();
         if (character == '=') {
-            return new Symbol(":=", Symbol.SymbolType.ASSIGN);
+            return Symbol.ASSIGN;
         }
 
         reader.goToPreviousChar();
