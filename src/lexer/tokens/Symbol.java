@@ -18,7 +18,7 @@ public enum Symbol implements Token {
     SEMICOLON(";"),
     END_OF_INPUT("$");
 
-    private static final Map<String, Symbol> MAP;
+    private static final Map<String, Token> MAP;
 
     static {
         MAP = new HashMap<>();
@@ -33,8 +33,12 @@ public enum Symbol implements Token {
         this.lexeme = lexeme;
     }
 
-    public static Symbol get(String lexeme) {
+    public static Token get(String lexeme) {
         return MAP.getOrDefault(lexeme, null);
+    }
+
+    public static Map<String, Token> getMap() {
+        return MAP;
     }
 
     @Override

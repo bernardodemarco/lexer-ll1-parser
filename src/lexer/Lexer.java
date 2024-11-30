@@ -21,6 +21,8 @@ public class Lexer {
     public Lexer() {
         reader = new Reader();
         reserveKeywords();
+        reserveSymbols();
+        reserveRelOps();
     }
 
     public Map.Entry<List<Token>, Map<String, Token>> scan(String filePath) throws IOException {
@@ -129,7 +131,9 @@ public class Lexer {
             reader.goToPreviousChar();
         }
 
-        return new Number(String.valueOf(value), value);
+        Token number = new Number(String.valueOf(value), value);
+        reserve(number);
+        return number;
     }
 
     private Token tokenizeRelOp(char character) {
@@ -184,8 +188,20 @@ public class Lexer {
         symbolsTable.put(token.getLexeme(), token);
     }
 
+    private void reserveAll(Map<String, Token> entries) {
+        symbolsTable.putAll(entries);
+    }
+
     private void reserveKeywords() {
         Arrays.stream(Keyword.values()).forEach(this::reserve);
+    }
+
+    private void reserveSymbols() {
+        reserveAll(Symbol.getMap());
+    }
+
+    private void reserveRelOps() {
+        Arrays.stream(RelOp.values()).forEach(this::reserve);
     }
 
     private boolean isWhitespace(char character) {
