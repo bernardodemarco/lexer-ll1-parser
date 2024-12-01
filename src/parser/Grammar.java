@@ -3,10 +3,17 @@ package parser;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TransitionTable {
-    private Map<String, Map<String, String>> table = getTable();
+public class Grammar {
+    public static final String EPSILON = "ε";
+    public static final String ID = "id";
+    public static final String NUM = "num";
+    public static final String PRODUCTION = "->";
+    public static final String START_SYMBOL = "MAIN";
+    public static final String ATTRIBUTION_PRIME_SYMBOL = "ATRIBST'";
+    public static final String FUNCTION_CALL_ATTRIBUTION = "idFCALL";
+    public static final String EXPRESSION_ATTRIBUTION = "idEXPR";
 
-    private Map<String, Map<String, String>> getTable() {
+    public Map<String, Map<String, String>> getTable() {
         Map<String, Map<String, String>> table = new HashMap<>();
 
         table.put("MAIN", Map.of(
@@ -72,11 +79,10 @@ public class TransitionTable {
                 "idFCALL", "ATRIBST' -> FCALL",
                 "(", "ATRIBST' -> EXPR",
                 "num", "ATRIBST' -> EXPR"
-
         ));
 
         table.put("FCALL", Map.of(
-                "id", "FCALL -> id ( PARLISTCALL )'"
+                "id", "FCALL -> id ( PARLISTCALL )"
         ));
 
         table.put("PARLISTCALL", Map.of(

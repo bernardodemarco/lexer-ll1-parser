@@ -8,7 +8,7 @@ public enum RelOp implements Token {
     LE("<="),
     GT(">"),
     GE(">="),
-    EQ("="),
+    EQ("=="),
     NE("<>");
 
     private final String lexeme;

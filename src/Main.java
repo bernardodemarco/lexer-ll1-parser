@@ -3,6 +3,7 @@
 */
 import lexer.Lexer;
 import lexer.tokens.Token;
+import parser.Parser;
 
 import java.io.IOException;
 import java.util.List;
@@ -30,7 +31,12 @@ public class Main {
                 continue;
             }
 
-            printOutput(lexer.scan(files.get(option - 1)));
+            Map.Entry<List<Token>, Map<String, Token>> lexicalResult = lexer.scan(files.get(option - 1));
+            List<Token> tokens = lexicalResult.getKey();
+            Map<String, Token> symbolsTable = lexicalResult.getValue();
+            printLexicalResult(tokens, symbolsTable);
+            new Parser().parse(tokens, symbolsTable);
+
             promptOptions();
             option = scanner.nextInt();
         }
@@ -52,10 +58,7 @@ public class Main {
         System.out.println("(0) - Enter 0 to exit");
     }
 
-    private static void printOutput(Map.Entry<List<Token>, Map<String, Token>> output) {
-        List<Token> tokens = output.getKey();
-        Map<String, Token> symbolsTable = output.getValue();
-
+    private static void printLexicalResult(List<Token> tokens, Map<String, Token> symbolsTable) {
         System.out.println("----------TOKENS-----------");
         System.out.println(tokens);
         System.out.println();

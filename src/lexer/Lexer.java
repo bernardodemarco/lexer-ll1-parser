@@ -141,28 +141,31 @@ public class Lexer {
                 2, RelOp.LE,
                 3, RelOp.NE,
                 4, RelOp.LT,
-                5, RelOp.EQ,
-                7, RelOp.GE,
-                8, RelOp.GT
+                6, RelOp.EQ,
+                8, RelOp.GE,
+                9, RelOp.GT
         );
 
         Map<Integer, Map<Character, Integer>> transitionTable = new HashMap<>();
         transitionTable.put(0, Map.of(
                 '<', 1,
                 '=', 5,
-                '>', 6
+                '>', 7
         ));
         transitionTable.put(1, Map.of(
                 '=', 2,
                 '>', 3,
                 '*', 4
         ));
-        transitionTable.put(6, Map.of(
-                '=', 7,
-                '*', 8
+        transitionTable.put(5, Map.of(
+                '=', 6
+        ));
+        transitionTable.put(7, Map.of(
+                '=', 8,
+                '*', 9
         ));
 
-        int state = transitionTable.get(0).get(character);
+        Integer state = transitionTable.get(0).get(character);
         while (!acceptStates.containsKey(state)) {
             if (reader.isEndOfLine()) {
                 character = '*';
@@ -178,7 +181,13 @@ public class Lexer {
                 reader.goToPreviousChar();
             }
 
-            state = transitionTable.get(state).get(character);
+            Integer possibleState = transitionTable.get(state).get(character);
+            if (isRelOpCharacter(character) && possibleState == null) {
+                character = '*';
+                reader.goToPreviousChar();
+                possibleState = transitionTable.get(state).get(character);
+            }
+            state = possibleState;
         }
 
         return acceptStates.get(state);
