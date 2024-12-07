@@ -1,0 +1,27 @@
+def factorial(int n) {
+    int base_case_result;
+    base_case_result := 1;
+
+    if (n == 0) {
+        return base_case_result;
+    }
+
+    if (n == 1) {
+        return base_case_result;
+    }
+
+    int recursive_call_result, recursive_call_params;
+    recursive_call_params := n - 1;
+    recursive_call_result := factorial(recursive_call_params);
+
+    int result;
+    result := n * recursive_call_result;
+    return result;
+}
+
+def main() {
+    int n, result;
+    n := 4;
+    result := factorial(n);
+    print result;
+}

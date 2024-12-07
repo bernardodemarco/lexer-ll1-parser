@@ -1,5 +1,0 @@
-def isDifferentThanTen return num <> 10
-
-def isLessThanOrEqualToTen return num <= 10
-
-if value > 20) 100 else 50

@@ -8,14 +8,19 @@ def fibonacci(int position) {
     }
 
     int first_recursive_call, first_recursive_call_params;
-    first_recursive_call := position - 1;
+    first_recursive_call_params := position - 1;
     first_recursive_call := fibonacci(first_recursive_call_params);
 
     int second_recursive_call, second_recursive_call_params;
     second_recursive_call_params := position - 2;
     second_recursive_call := fibonacci(second_recursive_call_params);
 
-    int sum_of_recursive_calls;
-    sum_of_recursive_calls := first_recursive_call + second_recursive_call;
-    return sum_of_recursive_calls;
+    return first_recursive_call + second_recursive_call;
+}
+
+def main() {
+    int position_in_fibonacci_sequence, result;
+    position_in_fibonacci_sequence := 5;
+    result := fibonacci(position_in_fibonacci_sequence);
+    print result;
 }
