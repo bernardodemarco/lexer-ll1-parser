@@ -2,21 +2,23 @@ package parser;
 
 import lexer.tokens.Symbol;
 import lexer.tokens.Token;
+import parser.exceptions.SyntaxException;
+import utils.Logger;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
-// add logger
-// handle exceptions better
+// take a look at the behavior of if statements
 // manual tests
 // refactor lexer
 
 public class Parser {
     private Map<String, Token> symbolsTable;
-    private Map<String, Map<String, String>> transitionTable = new Grammar().getTable();
+    private final Map<String, Map<String, String>> transitionTable = new Grammar().getTable();
     private List<Token> tokens;
     private Integer iterator = 0;
     private Stack<String> stack = getInitialSymbolsStack();
@@ -29,10 +31,7 @@ public class Parser {
         while (!input.getLexeme().equals(Symbol.END_OF_INPUT.getLexeme())) {
             boolean isTerminal = isTerminalSymbol(stack.peek());
 
-            System.out.println("STACK PEEK = " + stack.peek());
-            System.out.println("CURRENTTOKEN = " + input);
-            System.out.println("IS IT A TERMINAL? " + isTerminal);
-
+            Logger.debug(String.format("Input token: [%s], symbol at the top of the stack: [%s]", input, stack.peek()));
             if (isTerminal) {
                 if (stack.peek().equals(Grammar.EPSILON)) {
                     stack.pop();
@@ -40,7 +39,7 @@ public class Parser {
                 }
 
                 if (!symbolMatchesWithToken(stack.peek(), input)) {
-                    throw new RuntimeException("PARSER ERROR!!!");
+                    throw new SyntaxException(stack.peek(), input.getLexeme(), Set.of(stack.peek()));
                 }
 
                 stack.pop();
@@ -49,10 +48,10 @@ public class Parser {
                 String production = getProduction(stack.peek(), input);
 
                 if (production == null) {
-                    throw new RuntimeException("PARSER ERROR!!!");
+                    throw new SyntaxException(stack.peek(), input.getLexeme(), transitionTable.get(stack.peek()).keySet());
                 }
 
-                System.out.println(production);
+                Logger.info(production);
                 stack.pop();
                 getReverseProductionBody(production).forEach(stack::push);
             }

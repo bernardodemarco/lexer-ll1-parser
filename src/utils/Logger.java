@@ -1,3 +1,5 @@
+package utils;
+
 public class Logger {
     private static final String RED = "\u001B[31m";
     private static final String GREEN = "\u001B[32m";
@@ -10,16 +12,11 @@ public class Logger {
     }
 
     public static void info(String message) {
-        message = "INFO - " + message;
-        System.out.println(GREEN + message + RESET);
+        System.out.println(GREEN_BOLD + message + RESET);
     }
 
     public static void error(String message) {
         message = "ERROR - " + message;
         System.out.println(RED + message + RESET);
-    }
-
-    public static void prompt(String message) {
-        System.out.println(GREEN_BOLD + message + RESET);
     }
 }

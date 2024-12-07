@@ -4,6 +4,7 @@
 import lexer.Lexer;
 import lexer.tokens.Token;
 import parser.Parser;
+import utils.Logger;
 
 import java.io.IOException;
 import java.util.InputMismatchException;
@@ -23,8 +24,8 @@ public class Main {
     public static final Parser parser = new Parser();
 
     public static void main(String[] args) {
-        Logger.prompt("Lexer & LL(1) Parser Implementation");
-        Logger.prompt("-----------------------------------");
+        Logger.info("Lexer & LL(1) Parser Implementation");
+        Logger.info("-----------------------------------");
 
         int option = getInputOption();
         while (option != 0) {
@@ -54,10 +55,10 @@ public class Main {
     }
 
     private static void printLexicalResult(List<Token> tokens, Map<String, Token> symbolsTable) {
-        Logger.prompt("TOKENS");
+        Logger.info("TOKENS");
         System.out.println(tokens);
         System.out.println();
-        Logger.prompt("SYMBOLS");
+        Logger.info("SYMBOLS");
         System.out.println(symbolsTable);
         System.out.println();
     }
@@ -77,10 +78,10 @@ public class Main {
     }
 
     private static void promptOptions() {
-        Logger.prompt(String.format("%s LSI source files are available:", files.size()));
+        Logger.info(String.format("%s LSI source files are available:", files.size()));
         files.forEach((file) -> {
-            Logger.prompt(String.format("(%s) - %s", files.indexOf(file) + 1, file));
+            Logger.info(String.format("(%s) - %s", files.indexOf(file) + 1, file));
         });
-        Logger.prompt("(0) - Enter 0 to exit");
+        Logger.info("(0) - Enter 0 to exit");
     }
 }
