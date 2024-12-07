@@ -25,7 +25,7 @@ public class Grammar {
         }
     }
 
-    public Map<String, Map<String, String>> getTable() {
+    public static Map<String, Map<String, String>> getTable() {
         Map<String, Map<String, String>> table = new HashMap<>();
 
         table.put("MAIN", Map.of(

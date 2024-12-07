@@ -79,9 +79,7 @@ public class Main {
 
     private static void promptOptions() {
         Logger.info(String.format("%s LSI source files are available:", files.size()));
-        files.forEach((file) -> {
-            Logger.info(String.format("(%s) - %s", files.indexOf(file) + 1, file));
-        });
+        files.forEach((file) -> Logger.info(String.format("(%s) - %s", files.indexOf(file) + 1, file)));
         Logger.info("(0) - Enter 0 to exit");
     }
 }

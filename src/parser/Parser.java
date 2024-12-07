@@ -12,12 +12,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
-// take a look at the behavior of if statements
-// refactor lexer
-
 public class Parser {
     private Map<String, Token> symbolsTable;
-    private final Map<String, Map<String, String>> transitionTable = new Grammar().getTable();
+    private final Map<String, Map<String, String>> transitionTable = Grammar.getTable();
     private List<Token> tokens;
     private Integer iterator = 0;
     private Stack<String> stack = getInitialSymbolsStack();
@@ -82,7 +79,7 @@ public class Parser {
     }
 
     private String handleAttributionProductionConflict(Map<String, String> nonTerminalMap) {
-        if (peekNextToken().getLexeme().equals(SpecialSymbol.LPAREN.getLexeme())) {
+        if (peekNextInputToken().getLexeme().equals(SpecialSymbol.LPAREN.getLexeme())) {
             return nonTerminalMap.get(Grammar.SpecialSymbols.FUNCTION_CALL_ATTRIBUTION.getRepresentation());
         }
 
@@ -134,7 +131,7 @@ public class Parser {
         return getCurrentToken();
     }
 
-    private Token peekNextToken() {
+    private Token peekNextInputToken() {
         return tokens.get(iterator + 1);
     }
 }

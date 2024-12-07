@@ -10,7 +10,7 @@ import lexer.tokens.Keyword;
 import lexer.tokens.RelOp;
 import lexer.tokens.SpecialSymbol;
 import lexer.tokens.Token;
-import reader.Reader;
+import lexer.reader.Reader;
 import lexer.tokens.Number;
 
 import java.io.IOException;
