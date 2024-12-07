@@ -31,9 +31,9 @@ public class Parser {
         while (!input.getLexeme().equals(Symbol.END_OF_INPUT.getLexeme())) {
             boolean isTerminal = isTerminalSymbol(stack.peek());
 
-            Logger.debug(String.format("Input token: [%s], symbol at the top of the stack: [%s]", input, stack.peek()));
+            Logger.debug(String.format("Symbol at the top of the stack: [%s], input token: [%s]", stack.peek(), input));
             if (isTerminal) {
-                if (stack.peek().equals(Grammar.EPSILON)) {
+                if (stack.peek().equals(Grammar.SpecialSymbols.EPSILON.getRepresentation())) {
                     stack.pop();
                     continue;
                 }
@@ -68,15 +68,15 @@ public class Parser {
     private String getProduction(String nonTerminal, Token input) {
         Map<String, String> nonTerminalMap = transitionTable.get(nonTerminal);
         if (input.getType() == Token.Type.NUMBER) {
-            return nonTerminalMap.get(Grammar.NUM);
+            return nonTerminalMap.get(Grammar.SpecialSymbols.NUM.getRepresentation());
         }
 
         if (input.getType() != Token.Type.IDENTIFIER) {
             return nonTerminalMap.get(input.getLexeme());
         }
 
-        if (!stack.peek().equals(Grammar.ATTRIBUTION_PRIME_SYMBOL)) {
-            return nonTerminalMap.get(Grammar.ID);
+        if (!stack.peek().equals(Grammar.SpecialSymbols.ATTRIBUTION_PRIME_SYMBOL.getRepresentation())) {
+            return nonTerminalMap.get(Grammar.SpecialSymbols.ID.getRepresentation());
         }
 
         return handleAttributionProductionConflict(nonTerminalMap);
@@ -84,27 +84,31 @@ public class Parser {
 
     private String handleAttributionProductionConflict(Map<String, String> nonTerminalMap) {
         if (peekNextToken().getLexeme().equals(Symbol.LPAREN.getLexeme())) {
-            return nonTerminalMap.get(Grammar.FUNCTION_CALL_ATTRIBUTION);
+            return nonTerminalMap.get(Grammar.SpecialSymbols.FUNCTION_CALL_ATTRIBUTION.getRepresentation());
         }
 
-        return nonTerminalMap.get(Grammar.EXPRESSION_ATTRIBUTION);
+        return nonTerminalMap.get(Grammar.SpecialSymbols.EXPRESSION_ATTRIBUTION.getRepresentation());
     }
 
     private boolean isTerminalSymbol(String symbol) {
-        List<String> grammarSpecialSymbols = List.of(Grammar.ID, Grammar.NUM, Grammar.EPSILON);
+        List<String> grammarSpecialSymbols = List.of(
+                Grammar.SpecialSymbols.ID.getRepresentation(),
+                Grammar.SpecialSymbols.NUM.getRepresentation(),
+                Grammar.SpecialSymbols.EPSILON.getRepresentation()
+        );
         return grammarSpecialSymbols.contains(symbol) || symbolsTable.containsKey(symbol);
     }
 
     private boolean symbolMatchesWithToken(String symbol, Token token) {
-        boolean matchesIdentifier = symbol.equals(Grammar.ID) && token.getType() == Token.Type.IDENTIFIER;
-        boolean matchesNumber = symbol.equals(Grammar.NUM) && token.getType() == Token.Type.NUMBER;
+        boolean matchesIdentifier = symbol.equals(Grammar.SpecialSymbols.ID.getRepresentation()) && token.getType() == Token.Type.IDENTIFIER;
+        boolean matchesNumber = symbol.equals(Grammar.SpecialSymbols.NUM.getRepresentation()) && token.getType() == Token.Type.NUMBER;
         boolean matchesOtherTokenTypes = symbol.equals(token.getLexeme());
 
         return matchesIdentifier || matchesNumber || matchesOtherTokenTypes;
     }
 
     private List<String> getReverseProductionBody(String production) {
-        String body = production.split(Grammar.PRODUCTION)[1].trim();
+        String body = production.split(Grammar.SpecialSymbols.PRODUCTION.getRepresentation())[1].trim();
         List<String> nonTerminals = Arrays.asList(body.split("\\s+"));
         Collections.reverse(nonTerminals);
         return nonTerminals;
@@ -118,7 +122,7 @@ public class Parser {
     private Stack<String> getInitialSymbolsStack() {
         Stack<String> stack = new Stack<>();
         stack.push(Symbol.END_OF_INPUT.getLexeme());
-        stack.push(Grammar.START_SYMBOL);
+        stack.push(Grammar.SpecialSymbols.START_SYMBOL.getRepresentation());
         return stack;
     }
 

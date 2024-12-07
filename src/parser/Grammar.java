@@ -4,14 +4,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Grammar {
-    public static final String EPSILON = "ε";
-    public static final String ID = "id";
-    public static final String NUM = "num";
-    public static final String PRODUCTION = "->";
-    public static final String START_SYMBOL = "MAIN";
-    public static final String ATTRIBUTION_PRIME_SYMBOL = "ATRIBST'";
-    public static final String FUNCTION_CALL_ATTRIBUTION = "idFCALL";
-    public static final String EXPRESSION_ATTRIBUTION = "idEXPR";
+    public enum SpecialSymbols {
+        EPSILON("ε"),
+        ID("id"),
+        NUM("num"),
+        PRODUCTION("->"),
+        START_SYMBOL("MAIN"),
+        ATTRIBUTION_PRIME_SYMBOL("ATRIBST'"),
+        FUNCTION_CALL_ATTRIBUTION("idFCALL"),
+        EXPRESSION_ATTRIBUTION("idEXPR");
+
+        private final String representation;
+
+        SpecialSymbols(String representation) {
+            this.representation = representation;
+        }
+
+        public String getRepresentation() {
+            return representation;
+        }
+    }
 
     public Map<String, Map<String, String>> getTable() {
         Map<String, Map<String, String>> table = new HashMap<>();
