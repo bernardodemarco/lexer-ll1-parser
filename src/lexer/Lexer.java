@@ -1,25 +1,31 @@
-package lexer;/*
+/*
     Bernardo De Marco Gonçalves - 22102557
 */
+
+package lexer;
 
 import lexer.exceptions.UnrecognizedCharacterException;
 import lexer.tokens.Identifier;
 import lexer.tokens.Keyword;
 import lexer.tokens.RelOp;
-import lexer.tokens.Symbol;
+import lexer.tokens.SpecialSymbol;
 import lexer.tokens.Token;
 import reader.Reader;
 import lexer.tokens.Number;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Lexer {
     private final Map<String, Token> symbolsTable = new HashMap<>();
-    private final Reader reader;
+    private final Reader reader = new Reader();
 
     public Lexer() {
-        reader = new Reader();
         reserveKeywords();
         reserveSymbols();
         reserveRelOps();
@@ -45,13 +51,18 @@ public class Lexer {
     }
 
     private Token tokenize(char character) {
-        Token symbol = tokenizeSymbol(character);
-        if (symbol != null) {
-            return symbol;
+        if (isSpecialSymbol(character)) {
+            Token symbol = tokenizeSymbol(character);
+            if (symbol != null) {
+                return symbol;
+            }
         }
 
         if (isRelOpCharacter(character)) {
-            return tokenizeRelOp(character);
+            Token relOpToken = tokenizeRelOp(character);
+            if (relOpToken != null) {
+                return relOpToken;
+            }
         }
 
         if (isDigit(character)) {
@@ -66,18 +77,18 @@ public class Lexer {
     }
 
     private Token tokenizeSymbol(char character) {
-        if (character == Symbol.ASSIGN.getLexeme().charAt(0)) {
+        if (character == SpecialSymbol.ASSIGN.getLexeme().charAt(0)) {
             return tokenizeAssignSymbol();
         }
 
-        return Symbol.get(String.valueOf(character));
+        return SpecialSymbol.get(String.valueOf(character));
     }
 
     private Token tokenizeAssignSymbol() {
         reader.goToNextChar();
         char character = reader.getCurrentChar();
-        if (character == '=') {
-            return Symbol.ASSIGN;
+        if (character == SpecialSymbol.ASSIGN.getLexeme().charAt(1)) {
+            return SpecialSymbol.ASSIGN;
         }
 
         reader.goToPreviousChar();
@@ -175,7 +186,6 @@ public class Lexer {
 
             reader.goToNextChar();
             character = reader.getCurrentChar();
-
             if (!isRelOpCharacter(character)) {
                 character = '*';
                 reader.goToPreviousChar();
@@ -186,8 +196,15 @@ public class Lexer {
                 character = '*';
                 reader.goToPreviousChar();
                 possibleState = transitionTable.get(state).get(character);
+            } else if (possibleState == null) {
+                return null;
             }
+
             state = possibleState;
+        }
+
+        if (state == null) {
+            return null;
         }
 
         return acceptStates.get(state);
@@ -206,7 +223,7 @@ public class Lexer {
     }
 
     private void reserveSymbols() {
-        reserveAll(Symbol.getMap());
+        reserveAll(SpecialSymbol.getMap());
     }
 
     private void reserveRelOps() {
@@ -217,9 +234,13 @@ public class Lexer {
         return Character.isWhitespace(character);
     }
 
+    private boolean isSpecialSymbol(char character) {
+        return character == SpecialSymbol.ASSIGN.getLexeme().charAt(0)
+                || SpecialSymbol.getMap().containsKey(Character.toString(character));
+    }
+
     private boolean isRelOpCharacter(char character) {
-        List<Character> relOpCharacters = List.of('<', '>', '=');
-        return relOpCharacters.contains(character);
+        return RelOp.getRelOpCharacters().contains(character);
     }
 
     private boolean isIdentifierStart(char character) {

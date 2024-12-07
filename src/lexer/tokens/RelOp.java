@@ -3,6 +3,8 @@
 */
 package lexer.tokens;
 
+import java.util.List;
+
 public enum RelOp implements Token {
     LT("<"),
     LE("<="),
@@ -30,5 +32,9 @@ public enum RelOp implements Token {
     @Override
     public String toString() {
         return getStringRepresentation();
+    }
+
+    public static List<Character> getRelOpCharacters() {
+        return List.of('<', '>', '=');
     }
 }

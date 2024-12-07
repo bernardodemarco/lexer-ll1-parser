@@ -1,6 +1,6 @@
 package parser;
 
-import lexer.tokens.Symbol;
+import lexer.tokens.SpecialSymbol;
 import lexer.tokens.Token;
 import parser.exceptions.SyntaxException;
 import utils.Logger;
@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.Stack;
 
 // take a look at the behavior of if statements
-// manual tests
 // refactor lexer
 
 public class Parser {
@@ -28,7 +27,7 @@ public class Parser {
         this.symbolsTable = symbolsTable;
         Token input = getCurrentToken();
 
-        while (!input.getLexeme().equals(Symbol.END_OF_INPUT.getLexeme())) {
+        while (!input.getLexeme().equals(SpecialSymbol.END_OF_INPUT.getLexeme())) {
             boolean isTerminal = isTerminalSymbol(stack.peek());
 
             Logger.debug(String.format("Symbol at the top of the stack: [%s], input token: [%s]", stack.peek(), input));
@@ -83,7 +82,7 @@ public class Parser {
     }
 
     private String handleAttributionProductionConflict(Map<String, String> nonTerminalMap) {
-        if (peekNextToken().getLexeme().equals(Symbol.LPAREN.getLexeme())) {
+        if (peekNextToken().getLexeme().equals(SpecialSymbol.LPAREN.getLexeme())) {
             return nonTerminalMap.get(Grammar.SpecialSymbols.FUNCTION_CALL_ATTRIBUTION.getRepresentation());
         }
 
@@ -115,13 +114,13 @@ public class Parser {
     }
 
     private List<Token> getParserTokens(List<Token> tokens) {
-        tokens.add(Symbol.END_OF_INPUT);
+        tokens.add(SpecialSymbol.END_OF_INPUT);
         return tokens;
     }
 
     private Stack<String> getInitialSymbolsStack() {
         Stack<String> stack = new Stack<>();
-        stack.push(Symbol.END_OF_INPUT.getLexeme());
+        stack.push(SpecialSymbol.END_OF_INPUT.getLexeme());
         stack.push(Grammar.SpecialSymbols.START_SYMBOL.getRepresentation());
         return stack;
     }

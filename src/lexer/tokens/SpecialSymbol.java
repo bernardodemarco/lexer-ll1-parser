@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum Symbol implements Token {
+public enum SpecialSymbol implements Token {
     PLUS("+"),
     MINUS("-"),
     MULTIPLY("*"),
@@ -22,14 +22,14 @@ public enum Symbol implements Token {
 
     static {
         MAP = new HashMap<>();
-        Arrays.stream(Symbol.values()).forEach((symbol) -> {
-            MAP.put(symbol.getLexeme(), symbol);
+        Arrays.stream(SpecialSymbol.values()).forEach((specialSymbol) -> {
+            MAP.put(specialSymbol.getLexeme(), specialSymbol);
         });
     }
 
     private final String lexeme;
 
-    Symbol(String lexeme) {
+    SpecialSymbol(String lexeme) {
         this.lexeme = lexeme;
     }
 
