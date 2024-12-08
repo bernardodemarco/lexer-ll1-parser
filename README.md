@@ -1,10 +1,10 @@
-# Implementação Analisador Léxico - Parte A
+# Implementação Parser LL(1)
 
 Bernardo De Marco Gonçalves - 22102557
 
 ## Instruções para execução
 
-Para compilação e exeução do analisador léxico implementado, o _script bash_ `run.sh` foi criado. Ele realiza a compilação de todos arquivos Java para o diretório `out` e, em seguida, realiza a execução da classe `Main`. Portanto, basta navegar até a _root_ do projeto, conceder permissão de execução ao _script_ e executá-lo:
+Para compilação e execução do Parser LL(1), o _script bash_ `run.sh` foi criado. Ele realiza a compilação de todos arquivos Java para o diretório `out` e, em seguida, realiza a execução da classe `Main`. Portanto, basta navegar até a _root_ do projeto, conceder permissão de execução ao _script_ e executá-lo:
 
 ```bash
 ls -l
@@ -22,4 +22,4 @@ chmod +x ./run.sh
 ./run.sh
 ```
 
-Os arquivos de código-fonte a serem analisados pelo lexer.Lexer encontram-se no _folder_ `/src/resources.lsi`. Ao executar o lexer.Lexer, é solicitado ao usuário qual arquivo ele deseja que o lexer.Lexer analise. Dois arquivos estão disponíveis, um com erros léxicos e outro sem.
+Os arquivos de código-fonte a serem analisados pelo compilador encontram-se no _folder_ `/src/resources/lsi`. Ao executar o compilador, é solicitado ao usuário qual arquivo ele deseja que o seja compilado. Quatro arquivos estão disponíveis, dois com erros sintáticos e dois sem.
