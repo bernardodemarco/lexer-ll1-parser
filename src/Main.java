@@ -1,6 +1,3 @@
-/*
-    Bernardo De Marco Gonçalves - 22102557
-*/
 import lexer.Lexer;
 import lexer.tokens.Token;
 import parser.Parser;

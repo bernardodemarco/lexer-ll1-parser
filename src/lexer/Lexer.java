@@ -1,7 +1,3 @@
-/*
-    Bernardo De Marco Gonçalves - 22102557
-*/
-
 package lexer;
 
 import lexer.exceptions.UnrecognizedCharacterException;

@@ -1,6 +1,3 @@
-/*
-    Bernardo De Marco Gonçalves - 22102557
-*/
 package lexer.tokens;
 
 import java.util.List;

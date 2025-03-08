@@ -1,6 +1,3 @@
-/*
-    Bernardo De Marco Gonçalves - 22102557
-*/
 package lexer.reader;
 
 import java.io.IOException;
